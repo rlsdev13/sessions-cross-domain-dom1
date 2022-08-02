@@ -5,24 +5,32 @@
     
     const data = "holla session 1";
     
-    onMount( async() => {
-        iFrame = document.getElementById('iframe-id')!;
-        iFrame.contentWindow!.postMessage(data);
-        window.localStorage.setItem('sitio1',data);
-        
+    onMount(async() => {
+        setTimeout(() => {
+            iFrame.contentWindow?.postMessage(data,'http://localhost:8080');       
+        },500);
     });
+
+    const handleClick = () => {
+        // iFrame = document.getElementById('iframe-id')!;
+        iFrame.contentWindow!.postMessage(data,'http://localhost:8080');
+    }
 
 
 
 </script>
 
+<button on:click={handleClick} class="btn btn-primary">
+    hola
+</button>
+
 <div class="container">
    <iframe
-        id="iframe-id"
+        bind:this={iFrame}
         class="resp-iframe"
         src="http://localhost:8080" 
         title="Login"
-        >
+    >
     </iframe>
 </div>
 
