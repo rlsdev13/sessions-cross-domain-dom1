@@ -2,27 +2,20 @@
     import { onMount } from 'svelte';
     
     let iFrame : Partial<HTMLIFrameElement>;
-    
-    const data = "holla session 1";
-    
-    onMount(async() => {
-        setTimeout(() => {
-            iFrame.contentWindow?.postMessage(data,'http://localhost:8080');       
-        },500);
-    });
 
-    const handleClick = () => {
-        // iFrame = document.getElementById('iframe-id')!;
-        iFrame.contentWindow!.postMessage(data,'http://localhost:8080');
+    const data = {
+        action : 'save',
+        key : 'token',
+        value : "2a1sd5sa1da1s4c21x321c"
     }
 
-
+    onMount(async() => {
+        setTimeout(() => {
+            iFrame.contentWindow?.postMessage(data,'http://localhost:8080');
+        },350);
+    });
 
 </script>
-
-<button on:click={handleClick} class="btn btn-primary">
-    hola
-</button>
 
 <div class="container">
    <iframe
