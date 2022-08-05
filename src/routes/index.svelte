@@ -9,11 +9,18 @@
         value : "2a1sd5sa1da1s4c21x321c"
     }
 
-    onMount(async() => {
-        setTimeout(() => {
+    onMount(() => {
+        document.addEventListener('readystatechange', () => {
+            console.log(iFrame.contentWindow)
+            console.log("weeyy yaaa")
             iFrame.contentWindow?.postMessage(data,'http://localhost:8080');
-        },350);
+        });
     });
+
+
+    const handleLoad = () => {
+        iFrame.contentWindow?.postMessage(data,'http://localhost:8080');
+    }
 
 </script>
 
