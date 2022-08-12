@@ -1,5 +1,10 @@
+<script context="module">
+    
+</script>
+
 <script lang="ts">
     import { onMount } from 'svelte';
+    import { goto } from '$app/navigation';
     
     let iFrame : Partial<HTMLIFrameElement>;
 
@@ -9,11 +14,18 @@
         value : "2a1sd5sa1da1s4c21x321c"
     }
 
+    window.addEventListener('message',function(message){
+        if(message.data.type=="session.loaded"){
+            window.localStorage.setItem('token',message.data.token)
+            goto('/home');
+        }
+    });
+
     onMount(() => {
         document.addEventListener('readystatechange', () => {
-            console.log(iFrame.contentWindow)
-            console.log("weeyy yaaa")
-            iFrame.contentWindow?.postMessage(data,'http://localhost:8080');
+            setTimeout(() => {
+                iFrame.contentWindow?.postMessage(data,'http://localhost:8080');
+            },100);
         });
     });
 
@@ -28,7 +40,7 @@
    <iframe
         bind:this={iFrame}
         class="resp-iframe"
-        src="http://localhost:8080" 
+        src="http://192.168.100.23:8080" 
         title="Login"
     >
     </iframe>
