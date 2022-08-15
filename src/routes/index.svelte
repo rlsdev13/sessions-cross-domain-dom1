@@ -1,40 +1,81 @@
-<script context="module">
-    
-</script>
-
 <script lang="ts">
     import { onMount } from 'svelte';
     import { goto } from '$app/navigation';
     
     let iFrame : Partial<HTMLIFrameElement>;
 
-    const data = {
-        action : 'save',
-        key : 'token',
-        value : "2a1sd5sa1da1s4c21x321c"
+    let correo : string = 'user6sda@gmail.com';
+    let password : string = '123456';
+
+    const handleLogin = () => {
+        const data = {
+            action : 'login',
+            correo,
+            password 
+        }
+        
+        iFrame.contentWindow?.postMessage(data,'http://192.168.100.23:8080');
     }
 
     window.addEventListener('message',function(message){
         if(message.data.type=="session.loaded"){
-            window.localStorage.setItem('token',message.data.token)
+            window.localStorage.setItem('token',message.data.token);
             goto('/home');
+        }else if(message.data.type === 'returnToken'){
+            window.localStorage.setItem('token',message.data.token);
         }
     });
 
     onMount(() => {
-        document.addEventListener('readystatechange', () => {
-            setTimeout(() => {
-                iFrame.contentWindow?.postMessage(data,'http://localhost:8080');
-            },100);
-        });
+        const data = {
+            action : 'get',
+            correo : '',
+            password : ''
+        }
+
+        
+        window.document.onreadystatechange = function () {
+            if(window.document.readyState == 'complete'){
+                iFrame.contentWindow?.postMessage(data,'http://192.168.100.23:8080');
+            }
+        }
+        // setTimeout(() => {
+        // }, 500);
     });
 
-
-    const handleLoad = () => {
-        iFrame.contentWindow?.postMessage(data,'http://localhost:8080');
-    }
-
 </script>
+
+<div class="flex items-center justify-center min-h-screen bg-gray-100">
+    <div class="px-8 py-6 mt-4 text-left bg-white shadow-lg">
+        <h3 class="text-2xl font-bold text-center">Login</h3>
+        <form action="" on:submit|preventDefault={ handleLogin }>
+            <div class="mt-4">
+                <div>
+                    <label class="block" for="email">Email<label>
+                    <input 
+                        type="text" 
+                        placeholder="Email"
+                        class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
+                        bind:value={ correo }
+                    >
+                </div>
+                <div class="mt-4">
+                    <label class="block" for="password">Password<label>
+                    <input 
+                        type="password" 
+                        placeholder="Password"
+                        name="password"
+                        class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600" 
+                        bind:value={ password }
+                    />
+                </div>
+                <div class="flex items-baseline justify-between">
+                    <button class="px-6 py-2 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-900">Login</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 
 <div class="container">
    <iframe
