@@ -18,7 +18,14 @@
     }
 
     window.addEventListener('message',function(message){
-        if(message.data.type=="session.loaded"){
+        if( message.data.type === 'iframe.loaded' ){
+            const data = {
+                action : 'get',
+                correo : '',
+                password : ''
+            }
+            iFrame.contentWindow!.postMessage(data,'http://192.168.100.23:8080');
+        }else if(message.data.type=="session.loaded"){
             window.localStorage.setItem('token',message.data.token);
             goto('/home');
         }else if(message.data.type === 'returnToken'){
@@ -26,28 +33,14 @@
         }
     });
 
-    onMount(() => {
-        const data = {
-            action : 'get',
-            correo : '',
-            password : ''
-        }
-
-        
-        window.document.onreadystatechange = function () {
-            if(window.document.readyState == 'complete'){
-                iFrame.contentWindow?.postMessage(data,'http://192.168.100.23:8080');
-            }
-        }
-        // setTimeout(() => {
-        // }, 500);
+    onMount(() => {        
     });
 
 </script>
 
 <div class="flex items-center justify-center min-h-screen bg-gray-100">
     <div class="px-8 py-6 mt-4 text-left bg-white shadow-lg">
-        <h3 class="text-2xl font-bold text-center">Login</h3>
+        <h3 class="text-2xl font-bold text-center">Login Domain 1</h3>
         <form action="" on:submit|preventDefault={ handleLogin }>
             <div class="mt-4">
                 <div>
