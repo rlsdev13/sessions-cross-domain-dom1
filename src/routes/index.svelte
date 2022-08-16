@@ -1,6 +1,16 @@
+<script context="module">
+    import { goto } from '$app/navigation';
+
+    const token = !!window.localStorage.getItem('token');
+
+    if(token){
+        goto('/home');
+    }
+
+</script>
+
 <script lang="ts">
     import { onMount } from 'svelte';
-    import { goto } from '$app/navigation';
     
     let iFrame : Partial<HTMLIFrameElement>;
 
@@ -30,6 +40,7 @@
             goto('/home');
         }else if(message.data.type === 'returnToken'){
             window.localStorage.setItem('token',message.data.token);
+            goto('/home');
         }
     });
 
