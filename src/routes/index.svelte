@@ -24,18 +24,20 @@
             password 
         }
         
-        iFrame.contentWindow?.postMessage(data,'http://192.168.100.23:8080');
+        iFrame.contentWindow?.postMessage(data,'http://localhost:8080');
     }
 
     window.addEventListener('message',function(message){
         if( message.data.type === 'iframe.loaded' ){
+            console.log("loaded");
             const data = {
                 action : 'get',
                 correo : '',
                 password : ''
             }
-            iFrame.contentWindow!.postMessage(data,'http://192.168.100.23:8080');
+            iFrame.contentWindow!.postMessage(data,'http://localhost:8080');
         }else if(message.data.type=="session.loaded"){
+            console.log("session");
             window.localStorage.setItem('token',message.data.token);
             goto('/home');
         }else if(message.data.type === 'returnToken'){
@@ -85,7 +87,7 @@
    <iframe
         bind:this={iFrame}
         class="resp-iframe"
-        src="http://192.168.100.23:8080" 
+        src="http://localhost:8080" 
         title="Login"
     >
     </iframe>
