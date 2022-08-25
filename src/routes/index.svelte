@@ -43,6 +43,9 @@
         }else if(message.data.type === 'returnToken'){
             window.localStorage.setItem('token',message.data.token);
             goto('/home');
+        }else if(message.data.type === 'logout'){
+            window.localStorage.clear();
+            goto('/');
         }
     });
 
