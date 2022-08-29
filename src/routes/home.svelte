@@ -38,8 +38,10 @@
         }else if( message.data.type === 'isToken' ){
             if(!message.data.exist){
                 window.localStorage.clear();
-                goto('/')
+                goto('/');
             }
+        }else if( message.data.type === 'logout' ){
+            console.log("se elimino el token en iframe");
         }
     });
 
