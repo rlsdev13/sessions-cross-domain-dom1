@@ -14,7 +14,7 @@
     
     let iFrame : Partial<HTMLIFrameElement>;
 
-    let correo : string = 'user6sda@gmail.com';
+    let correo : string = 'user2@gmail.com';
     let password : string = '123456';
 
     const handleLogin = () => {
