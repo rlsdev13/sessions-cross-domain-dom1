@@ -1,5 +1,6 @@
 <script context="module">
     import { goto } from '$app/navigation';
+    import { onMount } from 'svelte';
 
     const token = !!window.localStorage.getItem('token');
 
@@ -9,9 +10,7 @@
 
 </script>
 
-<script lang="ts">
-    import { onMount } from 'svelte';
-    
+<script lang="ts">    
     let iFrame : Partial<HTMLIFrameElement>;
 
     let correo : string = 'user2@gmail.com';
@@ -20,32 +19,33 @@
     const handleLogin = () => {
         const data = {
             action : 'login',
-            correo,
-            password 
+            type : 'credentials',
+            message : {
+                correo,
+                password
+            }
         }
         
-        iFrame.contentWindow?.postMessage(data,'http://localhost:8080');
+        iFrame.contentWindow?.postMessage(data,'http://192.168.100.23:8080');
     }
 
-    window.addEventListener('message',function(message){
-        if( message.data.type === 'iframe.loaded' ){
-            console.log("loaded");
-            const data = {
-                action : 'get',
-                correo : '',
-                password : ''
+    window.addEventListener('message',function(event){
+
+        const { action, type, message } = event.data;
+        
+        if( action === 'loaded' ){//mensaje cuando el iframe esta cargado
+            console.log(action, type, message);
+            if(message){//si existe token es recibido aqui
+                window.localStorage.setItem('token',message);
+                goto('/home');
             }
-            iFrame.contentWindow!.postMessage(data,'http://localhost:8080');
-        }else if(message.data.type=="session.loaded"){
-            console.log("session");
-            window.localStorage.setItem('token',message.data.token);
+        }else if( action === 'session'){//mensaje de retorno cuando del servicio de auth
+            console.log(action,type,message);
+            console.log("token recibido!!!", message)
+            window.localStorage.setItem('token',message);
             goto('/home');
-        }else if(message.data.type === 'returnToken'){
-            window.localStorage.setItem('token',message.data.token);
-            goto('/home');
-        }else if(message.data.type === 'logout'){
-            window.localStorage.clear();
-            goto('/');
+        }else if( action === 'error' ){
+            console.log(action,type,message);
         }
     });
 
@@ -56,7 +56,7 @@
 
 <div class="flex items-center justify-center min-h-screen bg-gray-100">
     <div class="px-8 py-6 mt-4 text-left bg-white shadow-lg">
-        <h3 class="text-2xl font-bold text-center">Login Domain 1</h3>
+        <h3 class="text-2xl font-bold text-center">Login Domain 1f</h3>
         <form action="" on:submit|preventDefault={ handleLogin }>
             <div class="mt-4">
                 <div>
@@ -90,7 +90,7 @@
    <iframe
         bind:this={iFrame}
         class="resp-iframe"
-        src="http://localhost:8080" 
+        src="http://192.168.100.23:8080" 
         title="Login"
     >
     </iframe>

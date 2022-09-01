@@ -17,31 +17,25 @@
     const handleLogout = () => {
         const data = {
             action : 'logout',
-            correo : '',
-            password : ''
+            type : '',
+            message : ''
         }
 
-        iFrame.contentWindow?.postMessage(data,'http://localhost:8080');
+        iFrame.contentWindow?.postMessage(data,'http://192.168.100.23:8080');
         window.localStorage.clear();
-        console.log("logout1");
         goto('/');
     }
 
-    window.addEventListener('message', function(message){
-        if( message.data.type === 'iframe.loaded' ){
-            const data = {
-                action : 'isToken',
-                correo : '',
-                password : ''
-            }
-            iFrame.contentWindow?.postMessage(data,'http://localhost:8080');
-        }else if( message.data.type === 'isToken' ){
-            if(!message.data.exist){
+    window.addEventListener('message',function(event){
+
+        const { action, type, message } = event.data;
+
+        if( action === 'loaded' ){//mensaje cuando el iframe esta cargado
+            console.log(action, type, message);
+            if(message === null ){//si existe token es recibido aqui
                 window.localStorage.clear();
                 goto('/');
             }
-        }else if( message.data.type === 'logout' ){
-            console.log("se elimino el token en iframe");
         }
     });
 
@@ -62,7 +56,7 @@
     <iframe
          bind:this={iFrame}
          class="resp-iframe"
-         src="http://localhost:8080" 
+         src="http://192.168.100.23:8080" 
          title="Login"
      >
     </iframe>
